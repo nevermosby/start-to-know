@@ -1,0 +1,7 @@
+﻿var config = {
+  flow_token: <FLOWDOCK_SOURCE_TOKEN>,
+  author_name: 'twp',
+  flowdock_messages: 'https://api.flowdock.com/messages',
+};
+ 
+module.exports = config;
