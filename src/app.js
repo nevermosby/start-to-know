@@ -187,9 +187,12 @@ app.post('/twp/download', function (req, res) {
 		"DownloadResult" : "201-Request has been created",
 		"Message" : ""
 	}
-	var downloadLogStream = fs.createWriteStream('download.log');
-	var uploadLogStream = fs.createWriteStream('upload.log');
-	var getInfoLogStream = fs.createWriteStream('title-size.txt');
+        var downloadLogFileName='download-' + new Date().getTime().toString() + '.log';
+        var uploadLogFileName='upload-' + new Date().getTime().toString() + '.log';
+        var getInfoLogFileName='title-size-' + new Date().getTime().toString() + '.log';
+	var downloadLogStream = fs.createWriteStream(downloadLogFileName);
+	var uploadLogStream = fs.createWriteStream(uploadLogFileName);
+	var getInfoLogStream = fs.createWriteStream(getInfoLogFileName);
 	var remoteDocker = new Docker({
 			//protocol: 'https', //you can enforce a protocol
 			host : REMOTE_DOCKER_HOST,
@@ -215,7 +218,7 @@ app.post('/twp/download', function (req, res) {
 			console.error("Failed to get the info of target video: " + targetUrl);
 		} else {
 			// parse file to get title and size
-			var info = parseInfo('title-size.txt');
+			var info = parseInfo(getInfoLogFileName);
 			var video = {
 				"url" : targetUrl,
 				"comments" : comments,
@@ -239,7 +242,7 @@ app.post('/twp/download', function (req, res) {
 						getVideoByIdAndPost(id, 'Failed to download with error: ' + JSON.stringify(err), function () {});
 					} else {
 						// start to upload
-						var uploadVideoPath = parsePath('download.log');
+						var uploadVideoPath = parsePath(downloadLogFileName);
 						// update the DB
 						var video = {
 							"id" : id,
